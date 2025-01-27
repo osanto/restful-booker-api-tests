@@ -1,0 +1,2 @@
+INFO     config:booking_client.py:37 Getting all bookings ids. Status code: 200. 
+INFO     config:booking_assertions.py:8 Total amount of records is: 1253

@@ -1,0 +1,2 @@
+INFO:config:Getting all bookings ids. Status code: 200. 
+INFO:config:Total amount of records is: 1253

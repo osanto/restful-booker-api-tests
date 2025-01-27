@@ -1,0 +1,1 @@
+INFO     config:booking_client.py:74 New booking created successfully. Status code: 200. Booking ID: 1824,
