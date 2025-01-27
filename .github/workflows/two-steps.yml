@@ -1,5 +1,9 @@
 name: Run Tests and Generate Allure Report in two steps
 
+permissions:
+  contents: write
+
+
 on:
     workflow_dispatch:
 
