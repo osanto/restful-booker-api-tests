@@ -1,0 +1,64 @@
+name: Run Tests and Generate Allure Report
+
+on:
+    pull_request:
+        branches:
+          - main
+    workflow_dispatch:
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.1.1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5.0.0
+        with:
+          python-version: 3.11.4
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Display Python version and installed packages
+        run: |
+          python --version
+          pip list
+
+      - name: Set environment variables
+        run: |
+          echo "LOGIN=${{ secrets.LOGIN }}" >> $GITHUB_ENV
+          echo "PASSWORD=${{ secrets.PASSWORD }}" >> $GITHUB_ENV
+
+      - name: Run tests
+        if: always()
+        run: pytest --alluredir=allure-results
+        continue-on-error: true
+
+      - name: Get Allure history
+        uses: actions/checkout@v4.1.1
+        if: always()
+        continue-on-error: true
+        with:
+          ref: gh-pages
+          path: gh-pages
+
+      - name: Allure Report action from marketplace
+        uses: simple-elf/allure-report-action@master
+        if: always()
+        with:
+          gh_pages: gh-pages
+          allure_report: allure-report
+          allure_history: allure-history
+          allure_results: allure-results
+          keep_reports: 5
+
+      - name: Deploy report to Github Pages
+        uses: peaceiris/actions-gh-pages@v4.0.0
+        with:
+          PERSONAL_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PUBLISH_DIR: allure-history
