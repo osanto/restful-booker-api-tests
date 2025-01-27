@@ -1,0 +1,1 @@
+INFO:config:Getting all bookings ids. Status code: 200. 
