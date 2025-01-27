@@ -1,0 +1,1 @@
+INFO:config:New booking created successfully. Status code: 200. Booking ID: 4319, 

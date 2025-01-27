@@ -1,0 +1,7 @@
+INFO     config:booking_client.py:74 New booking created successfully. Status code: 200. Booking ID: 4336, 
+ERROR    config:booking_response.py:22 Error processing response: Expecting value: line 1 column 1 (char 0)
+INFO     config:booking_client.py:99 Deleting booking ID 4336. Status code: 201.
+INFO     config:booking_client.py:102 Successfully deleted booking ID 4336. Full response: None
+INFO     config:booking_client.py:37 Getting all bookings ids. Status code: 200. 
+INFO     config:booking_helpers.py:7 Booking ID we are trying to find: 4336
+WARNING  config:booking_helpers.py:14 Booking ID 4336 was not found in the list.
