@@ -1,0 +1,3 @@
+INFO:config:New booking created successfully. Status code: 200. Booking ID: 2776, 
+INFO:config:Updating booking ID 2776 with first name: Updated Test Name. Status code: 200.
+INFO:config:Successfully updated booking. Full response: {'firstname': 'Updated Test Name', 'lastname': 'Browning', 'totalprice': 2409, 'depositpaid': True, 'bookingdates': {'checkin': '2025-02-13', 'checkout': '2025-03-12'}, 'additionalneeds': 'best'}

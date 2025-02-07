@@ -1,0 +1,7 @@
+INFO:config:New booking created successfully. Status code: 200. Booking ID: 2780, 
+ERROR:config:Error processing response: Expecting value: line 1 column 1 (char 0)
+INFO:config:Deleting booking ID 2780. Status code: 201.
+INFO:config:Successfully deleted booking ID 2780. Full response: None
+INFO:config:Getting all bookings ids. Status code: 200. 
+INFO:config:Booking ID we are trying to find: 2780
+WARNING:config:Booking ID 2780 was not found in the list.

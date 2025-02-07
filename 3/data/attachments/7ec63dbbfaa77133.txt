@@ -1,0 +1,4 @@
+INFO     config:booking_client.py:74 New booking created successfully. Status code: 200. Booking ID: 2774, 
+INFO     config:booking_client.py:37 Getting all bookings ids. Status code: 200. 
+INFO     config:booking_helpers.py:7 Booking ID we are trying to find: 2774
+INFO     config:booking_helpers.py:12 Booking ID 2774 was found in the list.
