@@ -1,13 +1,9 @@
-import requests
 import allure
 
 from config import Statuses
 from tests.assertions.booking_assertions import *
 from utils.booking_helpers import search_created_booking_in_bookings
 from client.booking_client import BookingClient
-
-STATUS_OK = requests.codes.ok
-STATUS_CREATED = Statuses.STATUS_CREATED
 
 
 class TestBooking:
@@ -16,7 +12,7 @@ class TestBooking:
     def test_get_all_booking_ids_returns_200(self, client: BookingClient):
         response_obj = client.get_all_booking_ids()
 
-        assert response_obj.status_code == STATUS_OK, f"Status code is not {STATUS_OK}"
+        assert response_obj.status_code == Statuses.STATUS_OK, f"Status code is not {Statuses.STATUS_OK}"
 
     @allure.title("Test that get_all_booking_ids returns more than zero bookings")
     def test_get_all_booking_ids_returns_more_than_zero_bookings(self, client: BookingClient):
@@ -28,7 +24,7 @@ class TestBooking:
     def test_new_booking_returns_200(self, client: BookingClient, booking_data: dict):
         new_booking_id, response = client.create_new_booking(booking_data)
 
-        assert response.status_code == STATUS_OK, 'Booking is not created'
+        assert response.status_code == Statuses.STATUS_OK, 'Booking is not created'
 
     @allure.title("Test that a new booking is available in the list of all existing bookings")
     def test_new_booking_can_be_found_in_list_of_all_bookings(self, client: BookingClient, booking_data: dict):
@@ -54,10 +50,10 @@ class TestBooking:
         assert response.result['firstname'] == new_first_name, 'First name was not updated'
 
     @allure.title("Test that delete a booking returns status 201")
-    def test_delete_booking_returns_200(self, client: BookingClient, booking_data: dict):
+    def test_delete_booking_returns_201(self, client: BookingClient, booking_data: dict):
         new_booking_id, _ = client.create_new_booking(booking_data)
         response = client.delete_booking(new_booking_id)
-        assert response.status_code == STATUS_CREATED, f'Booking status is not {STATUS_CREATED}, it is {response.status_code}'
+        assert response.status_code == Statuses.STATUS_CREATED, f'Booking status is not {Statuses.STATUS_CREATED}, it is {response.status_code}'
 
     @allure.title("Test that once booking is deleted it is not available in the list of all bookings")
     def test_booking_can_be_deleted(self, client: BookingClient, booking_data: dict):
