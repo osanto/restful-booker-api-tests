@@ -1,4 +1,7 @@
 # Restful-Booker
+
+[![CI](https://github.com/osanto/restful-booker-api-tests/actions/workflows/ci.yml/badge.svg)](https://github.com/osanto/restful-booker-api-tests/actions) [![Allure Report](https://img.shields.io/badge/Allure_Report-GitHub_Pages-blue?logo=googlechrome)](https://osanto.github.io/restful-booker-api-tests/)
+
 API tests for [API playground by Mark Winteringham](https://restful-booker.herokuapp.com/)
 implemented with python, requests and outputing results with allure reports.
 
