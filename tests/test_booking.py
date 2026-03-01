@@ -21,6 +21,32 @@ class TestBooking:
 
         assert_that_booking_amount_greater_than_zero(response_obj.result)
 
+    @allure.title("Test that get_all_booking_ids returns a list of objects with bookingid")
+    def test_get_all_booking_ids_response_body_structure(self, client: BookingClient):
+        response_obj = client.get_all_booking_ids()
+
+        assert response_obj.result is not None, "Response result should not be None"
+        assert isinstance(response_obj.result, list), f"Expected list, got {type(response_obj.result)}"
+        for item in response_obj.result:
+            assert isinstance(item, dict), f"Each item should be a dict, got {type(item)}"
+            assert "bookingid" in item, f"Each item should have 'bookingid' key, got keys: {list(item.keys())}"
+            assert isinstance(item["bookingid"], int), f"bookingid should be int, got {type(item['bookingid'])}"
+
+    @allure.title("Test that a booking response has expected structure (fields and types)")
+    def test_booking_structure(self, client: BookingClient, booking_data: dict):
+        new_booking_id, _ = client.create_new_booking(booking_data)
+        response_obj = client.get_booking_by_id(new_booking_id)
+
+        assert response_obj.booking is not None, "Expected a booking in response"
+        booking = response_obj.booking
+        assert isinstance(booking.first_name, str), "first_name should be str"
+        assert isinstance(booking.last_name, str), "last_name should be str"
+        assert isinstance(booking.totalprice, int), "totalprice should be int"
+        assert isinstance(booking.depositpaid, bool), "depositpaid should be bool"
+        assert booking.booking_dates is not None, "booking_dates should be present"
+        assert isinstance(booking.booking_dates.checkin, str), "booking_dates.checkin should be str"
+        assert isinstance(booking.booking_dates.checkout, str), "booking_dates.checkout should be str"
+
     @allure.title("Test that create_new_booking returns status 200")
     def test_new_booking_returns_200(self, client: BookingClient, booking_data: dict):
         new_booking_id, response = client.create_new_booking(booking_data)
