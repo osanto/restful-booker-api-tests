@@ -51,7 +51,7 @@ class BookingClient(BaseClient):
 
         return response_obj
 
-    def create_new_booking(self, booking_data: str) -> Tuple[int, Response]:
+    def create_new_booking(self, booking_data: dict) -> Tuple[int, Response]:
         payload = dumps(booking_data)
 
         try:
