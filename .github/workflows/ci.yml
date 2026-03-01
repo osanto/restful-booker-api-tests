@@ -1,4 +1,4 @@
-name: Run Tests
+name: CI
 
 permissions:
   contents: write
@@ -82,3 +82,35 @@ jobs:
         with:
           PERSONAL_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PUBLISH_DIR: allure-history
+
+  test-summary:
+    name: Test Summary
+    runs-on: ubuntu-latest
+    needs: [run-tests]
+    if: always()
+    steps:
+      - name: Test Summary
+        continue-on-error: true
+        run: |
+          SUMMARY_FILE="${GITHUB_STEP_SUMMARY:-/dev/stdout}"
+
+          RUN_TESTS="${{ needs.run-tests.result }}"
+
+          {
+            echo "## 🧪 CI Test Results Summary"
+            echo ""
+            echo "| Job | Status |"
+            echo "|-----|--------|"
+            echo "| Run Tests | ${RUN_TESTS:-unknown} |"
+            echo ""
+
+            if [ "$RUN_TESTS" != "success" ]; then
+              echo "❌ **Some checks failed. Please review the logs above.**"
+            else
+              echo "✅ **All checks passed!**"
+            fi
+          } >> "$SUMMARY_FILE" 2>&1 || true
+
+          if [ "$RUN_TESTS" != "success" ]; then
+            exit 1
+          fi
