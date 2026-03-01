@@ -66,7 +66,7 @@ class BookingClient(BaseClient):
                 f"Invalid response received. Status code: {response.status_code}, Response: {raw_response.text}")
             raise ValueError(f"Invalid response received: {raw_response.text}")
 
-        booking_id = response.result["bookingid"]
+        booking_id = response.booking_id
         if booking_id is None:
             logger.error(f"Booking ID missing in response: {response.result}")
             raise ValueError("Booking ID is missing from the response")

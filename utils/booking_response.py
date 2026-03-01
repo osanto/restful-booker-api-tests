@@ -5,13 +5,16 @@ from config import Logging
 
 logger = Logging.setup_logging()
 
+# response.json() can return a dict (e.g. single booking) or a list (e.g. get_all_booking_ids)
+JsonBody = dict[str, Any] | list[Any]
+
 
 class Response:
-    """Wrapper for a request response. Always sets status_code, result, and response_valid."""
+    """Wrapper for a request response. Always sets status_code, result, and response_valid. result is dict or list depending on endpoint."""
 
     def __init__(self, response) -> None:
         self.status_code = response.status_code
-        self.result: Optional[dict] = None
+        self.result: Optional[JsonBody] = None
         self.response_valid = False
 
         try:
@@ -23,10 +26,16 @@ class Response:
             self.response_valid = False
 
     def get(self, key: str, default: Any = None) -> Any:
-        """Return result[key] if result is a dict, else default."""
-        if self.result is None:
+        """Return result[key] if result is a dict, else default. No-op when result is a list."""
+        if self.result is None or not isinstance(self.result, dict):
             return default
         return self.result.get(key, default)
+
+    @property
+    def booking_id(self) -> Optional[int]:
+        """Booking ID from create response (result['bookingid']). None if missing or result is not a dict."""
+        value = self.get("bookingid")
+        return int(value) if value is not None else None
 
     @property
     def booking(self) -> Optional["Booking"]:
