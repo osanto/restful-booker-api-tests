@@ -110,5 +110,24 @@ class TestBooking:
         is_booking_deleted = search_created_booking_in_bookings(all_bookings, new_booking_id)
         assert not is_booking_deleted, f'Booking {new_booking_id} is not deleted'
 
+    @allure.title("Test that getting a non-existent booking returns 404")
+    def test_get_nonexistent_booking_returns_404(self, client: BookingClient):
+        response = client.get_booking_by_id(999999999)
+
+        assert response.status_code == 404, f"Expected 404, got {response.status_code}"
+        assert response.is_client_error, "Expected client error (4xx)"
+        assert not response.response_valid, "Response should not be valid for 404"
+
+    @allure.title("Test that updating without auth token returns 403")
+    def test_update_without_token_returns_403(self, client: BookingClient, booking_data: dict):
+        new_booking_id, _ = client.create_new_booking(booking_data)
+        client.token = None
+
+        response = client.update_booking(new_booking_id, firstname="Unauthorized")
+
+        assert response.status_code == 403, f"Expected 403, got {response.status_code}"
+        assert response.is_client_error, "Expected client error (4xx)"
+        assert response.error_message is not None, "Expected error message to be captured"
+
 
 
