@@ -1,0 +1,3 @@
+INFO:config:New booking created successfully. Status code: 200. Booking ID: 3556, 
+INFO:config:Updating booking ID 3556 with ['totalprice']. Status code: 200.
+INFO:config:Successfully updated booking. Full response: {'firstname': 'Lisa', 'lastname': 'Serrano', 'totalprice': 999, 'depositpaid': True, 'bookingdates': {'checkin': '2026-03-22', 'checkout': '2026-04-04'}, 'additionalneeds': 'shoulder'}
