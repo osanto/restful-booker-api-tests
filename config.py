@@ -1,15 +1,23 @@
+"""App configuration. Credentials are read from env; call reload_credentials() to re-read after .env may have been loaded."""
 import os
 import logging
 
 from dotenv import load_dotenv
 
-# Load environment variables from the .env file
 load_dotenv()
 
 
 class UserData:
+    """Credentials from env. Set LOGIN and PASSWORD in .env. Use reload_credentials() to re-read after late .env load."""
     LOGIN = os.getenv('LOGIN')
     PASSWORD = os.getenv('PASSWORD')
+
+
+def reload_credentials() -> None:
+    """Re-load .env and refresh UserData.LOGIN and UserData.PASSWORD. Call before using credentials if .env might have been loaded after config was imported."""
+    load_dotenv()
+    UserData.LOGIN = os.getenv('LOGIN')
+    UserData.PASSWORD = os.getenv('PASSWORD')
 
 
 class Urls:
