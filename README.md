@@ -6,6 +6,14 @@ API tests for [API playground by Mark Winteringham](https://restful-booker.herok
 
 **Prerequisites:** Python 3.11+
 
+## Project structure
+
+- `client/` - API client for interacting with Restful-Booker endpoints
+- `models/` - Pydantic models for API request/response validation
+- `tests/` - Test suite with fixtures and assertions
+- `utils/` - Helper utilities for response parsing and test data
+- `config.py` - Configuration for URLs, credentials, and logging
+
 ## Installation
 
 1. Clone the repository:

@@ -42,7 +42,7 @@ def client():
         "username": UserData.LOGIN,
         "password": UserData.PASSWORD
     }
-    response = requests.post(Urls.AUTH_URL, credentials)
+    response = requests.post(Urls.AUTH_URL, credentials, timeout=30)
     if not response.ok:
         pytest.fail(
             f"Auth failed: {response.status_code} {response.reason}. "

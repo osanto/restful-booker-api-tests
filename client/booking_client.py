@@ -11,6 +11,8 @@ logger = Logging.setup_logging()
 
 
 class BookingClient(BaseClient):
+    DEFAULT_TIMEOUT = 30
+
     def __init__(self):
         super().__init__()
 
@@ -30,7 +32,7 @@ class BookingClient(BaseClient):
         return headers
 
     def get_all_booking_ids(self) -> Response:
-        response_obj = Response(requests.get(self.base_url, headers=self.get_headers(with_token=False)))
+        response_obj = Response(requests.get(self.base_url, headers=self.get_headers(with_token=False), timeout=self.DEFAULT_TIMEOUT))
         if response_obj.result is None:
             logger.error("Failed to get a response from the bookings service. Response is None.")
             raise ValueError("No response received from the bookings service.")
@@ -40,7 +42,7 @@ class BookingClient(BaseClient):
 
     def get_booking_by_id(self, booking_id: int) -> Response:
         url = f'{self.base_url}/{booking_id}'
-        response_obj = Response(requests.get(url, headers=self.get_headers(with_token=False)))
+        response_obj = Response(requests.get(url, headers=self.get_headers(with_token=False), timeout=self.DEFAULT_TIMEOUT))
         logger.info(f"Getting booking by ID: {booking_id}. Status code: {response_obj.status_code}.")
 
         if response_obj.response_valid:
@@ -55,7 +57,7 @@ class BookingClient(BaseClient):
         payload = dumps(booking_data)
 
         try:
-            raw_response = requests.post(self.base_url, data=payload, headers=self.get_headers(with_token=False))
+            raw_response = requests.post(self.base_url, data=payload, headers=self.get_headers(with_token=False), timeout=self.DEFAULT_TIMEOUT)
             response = Response(raw_response)
         except requests.exceptions.RequestException as e:
             logger.error(f"Failed to create a new booking. Error: {e}. Payload: {payload}")
@@ -66,7 +68,7 @@ class BookingClient(BaseClient):
                 f"Invalid response received. Status code: {response.status_code}, Response: {raw_response.text}")
             raise ValueError(f"Invalid response received: {raw_response.text}")
 
-        booking_id = response.result["bookingid"]
+        booking_id = response.booking_id
         if booking_id is None:
             logger.error(f"Booking ID missing in response: {response.result}")
             raise ValueError("Booking ID is missing from the response")
@@ -82,7 +84,7 @@ class BookingClient(BaseClient):
             raise ValueError("At least one field to update is required")
         url = f"{self.base_url}/{booking_id}"
         payload = dumps(fields)
-        response_obj = Response(requests.patch(url, data=payload, headers=self.get_headers(with_token=True)))
+        response_obj = Response(requests.patch(url, data=payload, headers=self.get_headers(with_token=True), timeout=self.DEFAULT_TIMEOUT))
 
         logger.info(
             f"Updating booking ID {booking_id} with {list(fields.keys())}. Status code: {response_obj.status_code}."
@@ -100,7 +102,7 @@ class BookingClient(BaseClient):
 
     def delete_booking(self, booking_id: str) -> Response:
         url = f'{self.base_url}/{booking_id}'
-        response_obj = Response(requests.delete(url, headers=self.get_headers(with_token=True)))
+        response_obj = Response(requests.delete(url, headers=self.get_headers(with_token=True), timeout=self.DEFAULT_TIMEOUT))
 
         logger.info(f"Deleting booking ID {booking_id}. Status code: {response_obj.status_code}.")
 
