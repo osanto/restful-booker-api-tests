@@ -76,19 +76,25 @@ class BookingClient(BaseClient):
 
         return booking_id, response
 
-    def update_booking_first_name(self, booking_id: str, first_name: str) -> Response:
-        url = f'{self.base_url}/{booking_id}'
-        payload = self.__generate_booking_payload_first_name(first_name)
+    def update_booking(self, booking_id: str | int, **fields) -> Response:
+        """Update a booking with the given fields (API keys: firstname, lastname, totalprice, depositpaid, bookingdates, additionalneeds)."""
+        if not fields:
+            raise ValueError("At least one field to update is required")
+        url = f"{self.base_url}/{booking_id}"
+        payload = dumps(fields)
         response_obj = Response(requests.patch(url, data=payload, headers=self.get_headers(with_token=True)))
 
-        logger.info(f"Updating booking ID {booking_id} with first name: {first_name}. "
-                    f"Status code: {response_obj.status_code}.")
+        logger.info(
+            f"Updating booking ID {booking_id} with {list(fields.keys())}. Status code: {response_obj.status_code}."
+        )
 
         if response_obj.response_valid:
             logger.info(f"Successfully updated booking. Full response: {response_obj.result}")
         else:
-            logger.error(f"Failed to update booking ID {booking_id}. Status code: {response_obj.status_code}. "
-                         f"Full response: {response_obj.result if response_obj.result else 'No response data'}")
+            logger.error(
+                f"Failed to update booking ID {booking_id}. Status code: {response_obj.status_code}. "
+                f"Full response: {response_obj.result if response_obj.result else 'No response data'}"
+            )
 
         return response_obj
 
@@ -106,6 +112,3 @@ class BookingClient(BaseClient):
 
         return response_obj
 
-    @staticmethod
-    def __generate_booking_payload_first_name(first_name: str) -> str:
-        return dumps({"firstname": first_name})

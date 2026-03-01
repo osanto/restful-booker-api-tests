@@ -1,4 +1,5 @@
 import allure
+import pytest
 
 from config import Statuses
 from tests.assertions.booking_assertions import *
@@ -19,6 +20,32 @@ class TestBooking:
         response_obj = client.get_all_booking_ids()
 
         assert_that_booking_amount_greater_than_zero(response_obj.result)
+
+    @allure.title("Test that get_all_booking_ids returns a list of objects with bookingid")
+    def test_get_all_booking_ids_response_body_structure(self, client: BookingClient):
+        response_obj = client.get_all_booking_ids()
+
+        assert response_obj.result is not None, "Response result should not be None"
+        assert isinstance(response_obj.result, list), f"Expected list, got {type(response_obj.result)}"
+        for item in response_obj.result:
+            assert isinstance(item, dict), f"Each item should be a dict, got {type(item)}"
+            assert "bookingid" in item, f"Each item should have 'bookingid' key, got keys: {list(item.keys())}"
+            assert isinstance(item["bookingid"], int), f"bookingid should be int, got {type(item['bookingid'])}"
+
+    @allure.title("Test that a booking response has expected structure (fields and types)")
+    def test_booking_structure(self, client: BookingClient, booking_data: dict):
+        new_booking_id, _ = client.create_new_booking(booking_data)
+        response_obj = client.get_booking_by_id(new_booking_id)
+
+        assert response_obj.booking is not None, "Expected a booking in response"
+        booking = response_obj.booking
+        assert isinstance(booking.first_name, str), "first_name should be str"
+        assert isinstance(booking.last_name, str), "last_name should be str"
+        assert isinstance(booking.totalprice, int), "totalprice should be int"
+        assert isinstance(booking.depositpaid, bool), "depositpaid should be bool"
+        assert booking.booking_dates is not None, "booking_dates should be present"
+        assert isinstance(booking.booking_dates.checkin, str), "booking_dates.checkin should be str"
+        assert isinstance(booking.booking_dates.checkout, str), "booking_dates.checkout should be str"
 
     @allure.title("Test that create_new_booking returns status 200")
     def test_new_booking_returns_200(self, client: BookingClient, booking_data: dict):
@@ -41,13 +68,32 @@ class TestBooking:
         response_obj = client.get_booking_by_id(new_booking_id)
         assert response_obj.result == booking_data, 'Booking data does not match'
 
-    @allure.title("Test that a first name can be updated")
-    def test_booking_first_name_can_be_updated(self, client: BookingClient, booking_data: dict):
+    @pytest.mark.parametrize(
+        "api_key,new_value,booking_attr",
+        [
+            ("firstname", "Updated First Name", "first_name"),
+            ("lastname", "Updated Last Name", "last_name"),
+            ("totalprice", 999, "totalprice"),
+            ("depositpaid", True, "depositpaid"),
+            ("bookingdates", {"checkin": "2025-02-01", "checkout": "2025-02-05"}, "booking_dates"),
+            ("additionalneeds", "Breakfast", "additional_needs"),
+        ],
+        ids=["firstname", "lastname", "totalprice", "depositpaid", "bookingdates", "additionalneeds"],
+    )
+    @allure.title("Test that a booking field can be updated")
+    def test_booking_field_can_be_updated(
+        self, client: BookingClient, booking_data: dict, api_key: str, new_value, booking_attr: str
+    ):
+        allure.dynamic.title(f"Test that {api_key} can be updated")
         new_booking_id, _ = client.create_new_booking(booking_data)
 
-        new_first_name = "Updated Test Name"
-        response = client.update_booking_first_name(new_booking_id, new_first_name)
-        assert response.result['firstname'] == new_first_name, 'First name was not updated'
+        response = client.update_booking(new_booking_id, **{api_key: new_value})
+        assert response.booking is not None, "Expected a booking in response"
+        if booking_attr == "booking_dates":
+            assert response.booking.booking_dates.checkin == new_value["checkin"], "checkin was not updated"
+            assert response.booking.booking_dates.checkout == new_value["checkout"], "checkout was not updated"
+        else:
+            assert getattr(response.booking, booking_attr) == new_value, f"{booking_attr} was not updated"
 
     @allure.title("Test that delete a booking returns status 201")
     def test_delete_booking_returns_201(self, client: BookingClient, booking_data: dict):
