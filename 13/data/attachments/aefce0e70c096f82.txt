@@ -1,0 +1,3 @@
+INFO     config:booking_client.py:74 New booking created successfully. Status code: 200. Booking ID: 4413, 
+INFO     config:booking_client.py:87 Updating booking ID 4413 with ['additionalneeds']. Status code: 200.
+INFO     config:booking_client.py:92 Successfully updated booking. Full response: {'firstname': 'Joshua', 'lastname': 'Villegas', 'totalprice': 68, 'depositpaid': True, 'bookingdates': {'checkin': '2026-03-15', 'checkout': '2026-04-21'}, 'additionalneeds': 'Breakfast'}
