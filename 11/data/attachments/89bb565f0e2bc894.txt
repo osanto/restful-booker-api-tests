@@ -1,0 +1,3 @@
+INFO:config:New booking created successfully. Status code: 200. Booking ID: 405, 
+INFO:config:Getting booking by ID: 405. Status code: 200.
+INFO:config:Successfully retrieved booking. Full response: {'firstname': 'Christopher', 'lastname': 'White', 'totalprice': 2492, 'depositpaid': True, 'bookingdates': {'checkin': '2026-03-06', 'checkout': '2026-04-13'}, 'additionalneeds': 'national'}
