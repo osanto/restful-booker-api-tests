@@ -18,10 +18,12 @@ class Urls:
 
 
 class Statuses:
+    STATUS_OK = 200
     STATUS_CREATED = 201
 
 
 class Logging:
+    @staticmethod
     def setup_logging(level=logging.INFO):
         logging.basicConfig(level=level)
         logger = logging.getLogger(__name__)
