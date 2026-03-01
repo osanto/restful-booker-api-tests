@@ -13,10 +13,11 @@ implemented with python, requests and outputing results with allure reports.
    ```
 3. Set up environment variables:
 
-   Create a `.env` file in the project root and add the following (replace with your actual values):
+   Copy `.env.example` to `.env` and fill in your credentials:
 
    ```
-   USER_NAME=your_username
-   PASSWORD=your_password
+   cp .env.example .env
    ```
+
+   Edit `.env` and set your actual `LOGIN` and `PASSWORD` values.
    
