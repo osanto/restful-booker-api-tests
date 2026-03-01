@@ -78,7 +78,7 @@ class BookingClient(BaseClient):
 
         return booking_id, response
 
-    def update_booking(self, booking_id: str | int, **fields) -> Response:
+    def update_booking(self, booking_id: int, **fields) -> Response:
         """Update a booking with the given fields (API keys: firstname, lastname, totalprice, depositpaid, bookingdates, additionalneeds)."""
         if not fields:
             raise ValueError("At least one field to update is required")
@@ -100,7 +100,7 @@ class BookingClient(BaseClient):
 
         return response_obj
 
-    def delete_booking(self, booking_id: str) -> Response:
+    def delete_booking(self, booking_id: int) -> Response:
         url = f'{self.base_url}/{booking_id}'
         response_obj = Response(requests.delete(url, headers=self.get_headers(with_token=True), timeout=self.DEFAULT_TIMEOUT))
 
