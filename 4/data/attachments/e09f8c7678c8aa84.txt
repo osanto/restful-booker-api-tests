@@ -1,0 +1,4 @@
+INFO:config:New booking created successfully. Status code: 200. Booking ID: 1199, 
+INFO:config:Getting all bookings ids. Status code: 200. 
+INFO:config:Booking ID we are trying to find: 1199
+INFO:config:Booking ID 1199 was found in the list.
