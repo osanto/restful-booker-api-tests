@@ -9,6 +9,7 @@ idna==3.7
 iniconfig==2.0.0
 packaging==23.2
 pluggy==1.4.0
+pydantic>=2.0.0
 pytest==8.0.0
 python-dateutil==2.9.0.post0
 python-dotenv==1.0.1
