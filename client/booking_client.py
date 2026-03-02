@@ -5,7 +5,7 @@ import requests
 
 from client.base_client import BaseClient
 from utils.booking_response import Response
-from config import Urls, Logging
+from config import Urls, Logging, Statuses
 
 logger = Logging.setup_logging()
 
@@ -106,7 +106,7 @@ class BookingClient(BaseClient):
 
         logger.info(f"Deleting booking ID {booking_id}. Status code: {response_obj.status_code}.")
 
-        if response_obj.status_code == 201:
+        if response_obj.status_code == Statuses.STATUS_CREATED:
             logger.info(f"Successfully deleted booking ID {booking_id}. Full response: {response_obj.result}")
         else:
             logger.error(f"Failed to delete booking ID {booking_id}. Status code: {response_obj.status_code}. "
