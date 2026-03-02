@@ -1,0 +1,4 @@
+INFO:config:New booking created successfully. Status code: 200. Booking ID: 4144, 
+ERROR:config:Error processing response: Expecting value: line 1 column 1 (char 0)
+INFO:config:Updating booking ID 4144 with ['firstname']. Status code: 403.
+ERROR:config:Failed to update booking ID 4144. Status code: 403. Full response: No response data

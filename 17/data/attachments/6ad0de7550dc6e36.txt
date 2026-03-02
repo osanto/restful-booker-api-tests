@@ -1,0 +1,3 @@
+INFO     config:booking_client.py:76 New booking created successfully. Status code: 200. Booking ID: 4126, 
+INFO     config:booking_client.py:89 Updating booking ID 4126 with ['bookingdates']. Status code: 200.
+INFO     config:booking_client.py:94 Successfully updated booking. Full response: {'firstname': 'Nathan', 'lastname': 'Jenkins', 'totalprice': 3012, 'depositpaid': True, 'bookingdates': {'checkin': '2025-02-01', 'checkout': '2025-02-05'}, 'additionalneeds': 'piece'}
