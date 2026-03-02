@@ -1,6 +1,13 @@
 from pydantic import BaseModel, Field
 
 
+class BookingIdItem(BaseModel):
+    """Single item from get_all_booking_ids() response."""
+    booking_id: int = Field(alias="bookingid")
+
+    model_config = {"populate_by_name": True}
+
+
 class BookingDates(BaseModel):
     checkin: str
     checkout: str

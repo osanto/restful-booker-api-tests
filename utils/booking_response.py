@@ -68,6 +68,19 @@ class Response:
             logger.warning(f"Could not parse result as Booking: {e}")
             return None
 
+    @property
+    def booking_ids(self) -> Optional[list["BookingIdItem"]]:
+        """Parse result as list of BookingIdItem (from get_all_booking_ids). None if result is not a list."""
+        from models.booking import BookingIdItem
+
+        if not self.result or not isinstance(self.result, list):
+            return None
+        try:
+            return [BookingIdItem.model_validate(item) for item in self.result]
+        except Exception as e:
+            logger.warning(f"Could not parse result as list of BookingIdItem: {e}")
+            return None
+
 
 if TYPE_CHECKING:
-    from models.booking import Booking
+    from models.booking import Booking, BookingIdItem
