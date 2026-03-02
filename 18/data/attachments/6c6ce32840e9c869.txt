@@ -1,0 +1,3 @@
+ERROR:config:Error processing response: Expecting value: line 1 column 1 (char 0)
+INFO:config:Getting booking by ID: 999999999. Status code: 404.
+ERROR:config:Failed to retrieve booking. Status code: 404. Full response: No response data
