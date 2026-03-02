@@ -9,15 +9,17 @@ class BookingIdItem(BaseModel):
 
 
 class BookingDates(BaseModel):
-    checkin: str
-    checkout: str
+    check_in: str = Field(alias="checkin")
+    check_out: str = Field(alias="checkout")
+
+    model_config = {"populate_by_name": True}
 
 
 class Booking(BaseModel):
     first_name: str = Field(alias="firstname")
     last_name: str = Field(alias="lastname")
-    totalprice: int
-    depositpaid: bool
+    total_price: int = Field(alias="totalprice")
+    deposit_paid: bool = Field(alias="depositpaid")
     booking_dates: BookingDates = Field(alias="bookingdates")
     additional_needs: str | None = Field(default=None, alias="additionalneeds")
 

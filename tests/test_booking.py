@@ -39,11 +39,11 @@ class TestBooking:
         booking = response_obj.booking
         assert isinstance(booking.first_name, str), "first_name should be str"
         assert isinstance(booking.last_name, str), "last_name should be str"
-        assert isinstance(booking.totalprice, int), "totalprice should be int"
-        assert isinstance(booking.depositpaid, bool), "depositpaid should be bool"
+        assert isinstance(booking.total_price, int), "total_price should be int"
+        assert isinstance(booking.deposit_paid, bool), "deposit_paid should be bool"
         assert booking.booking_dates is not None, "booking_dates should be present"
-        assert isinstance(booking.booking_dates.checkin, str), "booking_dates.checkin should be str"
-        assert isinstance(booking.booking_dates.checkout, str), "booking_dates.checkout should be str"
+        assert isinstance(booking.booking_dates.check_in, str), "booking_dates.check_in should be str"
+        assert isinstance(booking.booking_dates.check_out, str), "booking_dates.check_out should be str"
 
     @allure.title("Test that create_new_booking returns status 200")
     def test_new_booking_returns_200(self, client: BookingClient, booking_data: dict):
@@ -72,8 +72,8 @@ class TestBooking:
         [
             ("firstname", "Updated First Name", "first_name"),
             ("lastname", "Updated Last Name", "last_name"),
-            ("totalprice", 999, "totalprice"),
-            ("depositpaid", True, "depositpaid"),
+            ("totalprice", 999, "total_price"),
+            ("depositpaid", True, "deposit_paid"),
             ("bookingdates", {"checkin": "2025-02-01", "checkout": "2025-02-05"}, "booking_dates"),
             ("additionalneeds", "Breakfast", "additional_needs"),
         ],
@@ -89,8 +89,8 @@ class TestBooking:
         response = client.update_booking(new_booking_id, **{api_key: new_value})
         assert response.booking is not None, "Expected a booking in response"
         if booking_attr == "booking_dates":
-            assert response.booking.booking_dates.checkin == new_value["checkin"], "checkin was not updated"
-            assert response.booking.booking_dates.checkout == new_value["checkout"], "checkout was not updated"
+            assert response.booking.booking_dates.check_in == new_value["checkin"], "check_in was not updated"
+            assert response.booking.booking_dates.check_out == new_value["checkout"], "check_out was not updated"
         else:
             assert getattr(response.booking, booking_attr) == new_value, f"{booking_attr} was not updated"
 
