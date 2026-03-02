@@ -1,3 +1,3 @@
-from models.booking import Booking, BookingDates
+from models.booking import Booking, BookingDates, BookingIdItem
 
-__all__ = ["Booking", "BookingDates"]
+__all__ = ["Booking", "BookingDates", "BookingIdItem"]

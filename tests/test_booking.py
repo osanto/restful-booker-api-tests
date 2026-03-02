@@ -2,7 +2,6 @@ import allure
 import pytest
 
 from config import Statuses
-from tests.assertions.booking_assertions import *
 from utils.booking_helpers import search_created_booking_in_bookings
 from client.booking_client import BookingClient
 
@@ -19,18 +18,17 @@ class TestBooking:
     def test_get_all_booking_ids_returns_more_than_zero_bookings(self, client: BookingClient):
         response_obj = client.get_all_booking_ids()
 
-        assert_that_booking_amount_greater_than_zero(response_obj.result)
+        assert response_obj.booking_ids is not None, "Expected booking_ids list"
+        assert len(response_obj.booking_ids) > 0, "Expected at least one booking"
 
     @allure.title("Test that get_all_booking_ids returns a list of objects with bookingid")
     def test_get_all_booking_ids_response_body_structure(self, client: BookingClient):
         response_obj = client.get_all_booking_ids()
 
-        assert response_obj.result is not None, "Response result should not be None"
-        assert isinstance(response_obj.result, list), f"Expected list, got {type(response_obj.result)}"
-        for item in response_obj.result:
-            assert isinstance(item, dict), f"Each item should be a dict, got {type(item)}"
-            assert "bookingid" in item, f"Each item should have 'bookingid' key, got keys: {list(item.keys())}"
-            assert isinstance(item["bookingid"], int), f"bookingid should be int, got {type(item['bookingid'])}"
+        assert response_obj.booking_ids is not None, "Expected booking_ids list"
+        assert len(response_obj.booking_ids) > 0, "Expected at least one booking ID"
+        for item in response_obj.booking_ids:
+            assert isinstance(item.booking_id, int), f"booking_id should be int, got {type(item.booking_id)}"
 
     @allure.title("Test that a booking response has expected structure (fields and types)")
     def test_booking_structure(self, client: BookingClient, booking_data: dict):
@@ -41,11 +39,11 @@ class TestBooking:
         booking = response_obj.booking
         assert isinstance(booking.first_name, str), "first_name should be str"
         assert isinstance(booking.last_name, str), "last_name should be str"
-        assert isinstance(booking.totalprice, int), "totalprice should be int"
-        assert isinstance(booking.depositpaid, bool), "depositpaid should be bool"
+        assert isinstance(booking.total_price, int), "total_price should be int"
+        assert isinstance(booking.deposit_paid, bool), "deposit_paid should be bool"
         assert booking.booking_dates is not None, "booking_dates should be present"
-        assert isinstance(booking.booking_dates.checkin, str), "booking_dates.checkin should be str"
-        assert isinstance(booking.booking_dates.checkout, str), "booking_dates.checkout should be str"
+        assert isinstance(booking.booking_dates.check_in, str), "booking_dates.check_in should be str"
+        assert isinstance(booking.booking_dates.check_out, str), "booking_dates.check_out should be str"
 
     @allure.title("Test that create_new_booking returns status 200")
     def test_new_booking_returns_200(self, client: BookingClient, booking_data: dict):
@@ -57,8 +55,9 @@ class TestBooking:
     def test_new_booking_can_be_found_in_list_of_all_bookings(self, client: BookingClient, booking_data: dict):
         new_booking_id, response = client.create_new_booking(booking_data)
 
-        all_bookings = client.get_all_booking_ids().result
-        is_new_booking_created = search_created_booking_in_bookings(all_bookings, new_booking_id)
+        all_bookings_response = client.get_all_booking_ids()
+        assert all_bookings_response.booking_ids is not None, "Expected booking_ids list"
+        is_new_booking_created = search_created_booking_in_bookings(all_bookings_response.booking_ids, new_booking_id)
         assert is_new_booking_created, f'Booking {new_booking_id} is not found in all bookings'
 
     @allure.title("Test that a specific booking contains all data specified during its creation")
@@ -73,8 +72,8 @@ class TestBooking:
         [
             ("firstname", "Updated First Name", "first_name"),
             ("lastname", "Updated Last Name", "last_name"),
-            ("totalprice", 999, "totalprice"),
-            ("depositpaid", True, "depositpaid"),
+            ("totalprice", 999, "total_price"),
+            ("depositpaid", True, "deposit_paid"),
             ("bookingdates", {"checkin": "2025-02-01", "checkout": "2025-02-05"}, "booking_dates"),
             ("additionalneeds", "Breakfast", "additional_needs"),
         ],
@@ -90,8 +89,8 @@ class TestBooking:
         response = client.update_booking(new_booking_id, **{api_key: new_value})
         assert response.booking is not None, "Expected a booking in response"
         if booking_attr == "booking_dates":
-            assert response.booking.booking_dates.checkin == new_value["checkin"], "checkin was not updated"
-            assert response.booking.booking_dates.checkout == new_value["checkout"], "checkout was not updated"
+            assert response.booking.booking_dates.check_in == new_value["checkin"], "check_in was not updated"
+            assert response.booking.booking_dates.check_out == new_value["checkout"], "check_out was not updated"
         else:
             assert getattr(response.booking, booking_attr) == new_value, f"{booking_attr} was not updated"
 
@@ -106,9 +105,29 @@ class TestBooking:
         new_booking_id, _ = client.create_new_booking(booking_data)
         client.delete_booking(new_booking_id)
 
-        all_bookings = client.get_all_booking_ids().result
-        is_booking_deleted = search_created_booking_in_bookings(all_bookings, new_booking_id)
+        all_bookings_response = client.get_all_booking_ids()
+        assert all_bookings_response.booking_ids is not None, "Expected booking_ids list"
+        is_booking_deleted = search_created_booking_in_bookings(all_bookings_response.booking_ids, new_booking_id)
         assert not is_booking_deleted, f'Booking {new_booking_id} is not deleted'
+
+    @allure.title("Test that getting a non-existent booking returns 404")
+    def test_get_nonexistent_booking_returns_404(self, client: BookingClient):
+        response = client.get_booking_by_id(999999999)
+
+        assert response.status_code == 404, f"Expected 404, got {response.status_code}"
+        assert response.is_client_error, "Expected client error (4xx)"
+        assert not response.response_valid, "Response should not be valid for 404"
+
+    @allure.title("Test that updating without auth token returns 403")
+    def test_update_without_token_returns_403(self, client: BookingClient, booking_data: dict):
+        new_booking_id, _ = client.create_new_booking(booking_data)
+        client.token = None
+
+        response = client.update_booking(new_booking_id, firstname="Unauthorized")
+
+        assert response.status_code == 403, f"Expected 403, got {response.status_code}"
+        assert response.is_client_error, "Expected client error (4xx)"
+        assert response.error_message is not None, "Expected error message to be captured"
 
 
 
