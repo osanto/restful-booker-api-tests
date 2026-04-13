@@ -1,3 +1,0 @@
-INFO     config:booking_client.py:74 New booking created successfully. Status code: 200. Booking ID: 1202, 
-INFO     config:booking_client.py:44 Getting booking by ID: 1202. Status code: 200.
-INFO     config:booking_client.py:47 Successfully retrieved booking. Full response: {'firstname': 'Megan', 'lastname': 'Roberts', 'totalprice': 194, 'depositpaid': True, 'bookingdates': {'checkin': '2026-03-27', 'checkout': '2026-04-03'}, 'additionalneeds': 'carry'}
