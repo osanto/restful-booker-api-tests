@@ -1,1 +1,0 @@
-INFO     config:booking_client.py:37 Getting all bookings ids. Status code: 200.
